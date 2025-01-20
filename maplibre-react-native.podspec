@@ -2,9 +2,20 @@ require 'json'
 
 package = JSON.parse(File.read(File.join(__dir__, 'package.json')))
 
-$RCTMLN = Object.new
+# Global Variable Defaults
+$MLRN_NATIVE_VERSION ||= "6.10.0"
+$MLRN_SPM_SPEC ||= {
+  url: "https://github.com/maplibre/maplibre-gl-native-distribution",
+  requirement: {
+    kind: "exactVersion",
+    version: $MLRN_NATIVE_VERSION
+  },
+  product_name: "MapLibre"
+}
 
-def $RCTMLN._add_spm_to_target(project, target, url, requirement, product_name)
+$MLRN = Object.new
+
+def $MLRN._add_spm_to_target(project, target, url, requirement, product_name)
   pkg_class = Xcodeproj::Project::Object::XCRemoteSwiftPackageReference
   ref_class = Xcodeproj::Project::Object::XCSwiftPackageProductDependency
   pkg = project.root_object.package_references.find { |p| p.class == pkg_class && p.repositoryURL == url }
@@ -23,19 +34,9 @@ def $RCTMLN._add_spm_to_target(project, target, url, requirement, product_name)
   end
 end
 
-def $RCTMLN.post_install(installer)
-  spm_spec = {
-    url: "https://github.com/maplibre/maplibre-gl-native-distribution",
-    requirement: {
-      kind: "exactVersion",
-      version: "6.5.4"
-    },
-    product_name: "MapLibre"
-  }
+def $MLRN.post_install(installer)
+  spm_spec = $MLRN_SPM_SPEC
 
-  if $RCTMLN_SPM_Spec.is_a?(Hash)
-    spm_spec = $RCTMLN_SPM_Spec
-  end
   project = installer.pods_project
   self._add_spm_to_target(
     project,
@@ -61,19 +62,19 @@ def $RCTMLN.post_install(installer)
 end
 
 Pod::Spec.new do |s|
-  s.name		= "maplibre-react-native"
-  s.summary		= "React Native Component for Maplibre Native"
-  s.version		= package['version']
-  s.authors		= { "Ian Wagner" => "ian.wagner@stadiamaps.com" }  # TODO: MapLibre email?
-  s.homepage    	= "https://github.com/maplibre/maplibre-react-native"
-  s.source      	= { :git => "https://github.com/maplibre/maplibre-react-native.git" }
-  s.license     	= "MIT"
-  s.platform    	= :ios, "8.0"
+  s.name      = "maplibre-react-native"
+  s.summary	  = "React Native library for creating maps with MapLibre Native"
+  s.version	  = package['version']
+  s.authors   = { "MapLibre" => "" }
+  s.homepage  = "https://github.com/maplibre/maplibre-react-native"
+  s.source    = { :git => "https://github.com/maplibre/maplibre-react-native.git" }
+  s.license   = "MIT"
+  s.platform  = :ios, "8.0"
 
   s.dependency 'React-Core'
   s.dependency 'React'
 
   s.subspec 'DynamicLibrary' do |sp|
-    sp.source_files	= "ios/RCTMLN/**/*.{h,m}"
+    sp.source_files	= "ios/MLRN/**/*.{h,m}"
   end
 end
