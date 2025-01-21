@@ -330,12 +330,12 @@ RCT_EXPORT_METHOD(setVisibleCoordinatesBounds:(nonnull NSNumber *)reactTag
     [self.bridge.uiManager addUIBlock:^(__unused RCTUIManager *manager, NSDictionary<NSNumber*, UIView*> *viewRegistry) {
         id view = viewRegistry[reactTag];
         
-        if (![view isKindOfClass:[RCTMLNMapView class]]) {
+        if (![view isKindOfClass:[MLRNMapView class]]) {
             RCTLogError(@"Invalid react tag, could not find RCTMLNMapView");
             return;
         }
         
-        __weak RCTMLNMapView *reactMapView = (RCTMLNMapView*)view;
+        __weak MLRNMapView *reactMapView = (MLRNMapView*)view;
         
         CLLocationCoordinate2D swCoordinate = CLLocationCoordinate2DMake([bounds[@"sw"][@"latitude"] floatValue], [bounds[@"sw"][@"longitude"] floatValue]);
         CLLocationCoordinate2D neCoordinate = CLLocationCoordinate2DMake([bounds[@"ne"][@"latitude"] floatValue], [bounds[@"ne"][@"longitude"] floatValue]);
